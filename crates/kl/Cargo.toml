@@ -1,0 +1,20 @@
+[package]
+name = "kl"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+description = "Direct, pure-Rust bindings for Linux Landlock LSM, seccomp BPF syscall filtering, and cgroup v2 resource limits without C runtime dependencies."
+
+[lints]
+workspace = true
+
+[dependencies]
+kl-domain = { path = "../kl-domain" }
+anyhow.workspace = true
+thiserror.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+tracing.workspace = true
