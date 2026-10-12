@@ -6,7 +6,7 @@ rust-version.workspace = true
 license.workspace = true
 authors.workspace = true
 repository.workspace = true
-description = "Direct, pure-Rust bindings for Linux Landlock LSM, seccomp BPF syscall filtering, and cgroup v2 resource limits without C runtime dependencies."
+description = "Kernel link eBPF — eBPF probes, priority clamping, and Landlock LSM confinement"
 
 [lints]
 workspace = true
