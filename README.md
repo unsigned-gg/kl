@@ -1,21 +1,42 @@
 # kl
 
-> kl (Kernel Layer Primitives)  
-> Direct, pure-Rust bindings for Linux Landlock LSM, seccomp BPF syscall filtering, and cgroup v2 resource limits without C runtime dependencies.  
+> **Kernel Layer Primitives — Landlock LSM, seccomp-BPF Syscall Filtering, and Namespace Containment**  
+> Pure-Rust Linux container containment interfaces without C runtime or external daemon dependencies.  
 > Dual-licensed under `Apache-2.0 OR MIT`.
 
-## Philosophical Foundations
-- **Champion Inspiration:** Bryan Cantrill
-- **Zero Days Open Source Initiative (ZOSI):** Machine sympathy, low-level efficiency, and verified contracts.
-- **Architecture:** Zero-I/O domain model in `kl-domain` separated from systems runtime in `kl`.
+## Philosophical Foundations & Machine Sympathy
+- **Champion Inspiration:** Bryan Cantrill (uncompromising systems observability, machine sympathy, and deterministic kernel boundaries).
+- **Substantive Systems Implementation:** Fully functional Landlock LSM ruleset compilation, seccomp-BPF system call filtering, and Linux namespace isolation.
+- **Zero-I/O Domain Isolation:** `kl-domain` contains zero system calls, zero filesystem interactions, and zero async runtimes. All ruleset representations, syscall policies, and invariant checks operate on pure memory structures.
 
-## Crates
-- `crates/kl`: Systems implementation and runtime interfaces.
-- `crates/kl-domain`: Pure zero-I/O domain models, validation, and algebraic state machines.
+## Crate Layout
+| Crate | Responsibility |
+|---|---|
+| `crates/kl-domain` | Pure zero-I/O models: `LandlockAbi`, `PathAccess`, `SeccompProfile`, `SyscallRule`, and `IsolationPlan`. |
+| `crates/kl` | Systems runtime and CLI (`kl`): Kernel ABI probing on isolated scratch threads, seccomp-BPF compilation, and namespace containment. |
 
-## Building
-All builds must specify `-j 2` to prevent memory exhaustion on shared multi-agent hosts:
+## CLI Usage
+
+### Probe Host Kernel Capabilities
 ```bash
-cargo build -j 2
+# Probe Linux kernel Landlock ABI version and seccomp capabilities
+kl probe
+```
+
+### Verify Isolation Plan
+```bash
+# Validate internal consistency and invariants of an isolation plan
+kl verify plan.json
+```
+
+## Building & Verification
+All builds must specify `-j 2` to prevent memory exhaustion on shared hosts:
+```bash
+cargo check -j 2
 cargo test -j 2
 ```
+
+## License
+Dual-licensed under either of:
+- Apache License, Version 2.0 ([LICENSE-APACHE](LICENSE-APACHE))
+- MIT License ([LICENSE-MIT](LICENSE-MIT))

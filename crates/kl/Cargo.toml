@@ -8,6 +8,10 @@ authors.workspace = true
 repository.workspace = true
 description = "Kernel link eBPF — eBPF probes, priority clamping, and Landlock LSM confinement"
 
+[[bin]]
+name = "kl"
+path = "src/main.rs"
+
 [lints]
 workspace = true
 
@@ -18,3 +22,6 @@ thiserror.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 tracing.workspace = true
+libc.workspace = true
+landlock.workspace = true
+seccompiler.workspace = true
