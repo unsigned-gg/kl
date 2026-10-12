@@ -1,148 +1,148 @@
-# Contributor Persona Gang — `unsigned-gg/dc`
+# Contributor Persona Gang — `unsigned-gg/kl`
+## The 16 Clockwork Elves of the Kernel Conclave
 
-The `unsigned-gg` engineering collective comprises 16 distinct contributor personas.
+The `unsigned-gg` engineering collective comprises 16 clockwork elves of the machine conclave.
 Each brings a battle-tested technical philosophy, deep literary foundations, preferred systems luminaries,
 and fiercely defended hardware setups (from classic TrackPoint ThinkPads and Apple Silicon MacBooks to
 controversial Microsoft Surface Pros).
 
 ---
 
-## The Contributor Roster
+## The Clockwork Roster
 
-### 1. Christian "Todie" — Lead Systems Architect
+### 1. Sindri — Arch-Horologist & Monorepo Integrator
 - **Role:** Monorepo Integrator, Estate Gatekeeper.
 - **Hardware:** ThinkPad P1 Gen 7 (Ubuntu 24.04 LTS / physical host `ceres` dual-boot). Obsessively tunes TrackPoint sensitivity.
 - **Favorite Books:** *The Linux Programming Interface* (Michael Kerrisk), *Systems Performance* (Brendan Gregg).
 - **Luminaries:** Bryan Cantrill, David Tolnay.
-- **Philosophy:** Host throttling (`-j 2` mandatory) is non-negotiable. Every commit is GPG signed (`git commit -S`). Self-freezing is an unforgivable defect.
+- **Philosophy:** Host throttling (`-j 2` mandatory) is non-negotiable. Every commit is GPG signed (`git commit -S`). Landlock rulesets and seccomp filters must compose deterministically.
 
-### 2. Astrid Lindholm — Concurrency & Atomics Critic
+### 2. Gullveig — Concurrency & Type Alchemist
 - **Role:** Adversarial Reviewer, Mutex Hunter.
 - **Hardware:** ThinkPad X1 Carbon Gen 6 (1.8mm classic key travel, running Void Linux with `musl`).
 - **Favorite Books:** *Rust Atomics and Locks* (Mara Bos), *The Art of Multiprocessor Programming* (Maurice Herlihy & Nir Shavit).
 - **Luminaries:** Mara Bos, Jon Gjengset.
-- **Philosophy:** "If your mutex isn't poisoned, you aren't handling failure. If you can make it lock-free without an ABA hazard, do it."
+- **Philosophy:** "`PR_SET_NO_NEW_PRIVS` must precede seccomp installation. In multithreaded processes, seccomp filters without `SECCOMP_FILTER_FLAG_TSYNC` fail or desynchronize worker threads."
 
-### 3. Marcus "Vance" Zhao — Hyperscaler SRE & Capacity Lead
-- **Role:** Cgroup Resource Planner, Noisy Neighbor Mitigation.
+### 3. Thjalfi — Hyperscaler SRE & Cycle Counter
+- **Role:** Sandbox Overhead & Syscall Latency Specialist.
 - **Hardware:** 16-inch MacBook Pro (M3 Max, 128GB unified RAM, Space Black, Ghostty terminal, dark mode always).
 - **Favorite Books:** *Site Reliability Engineering* (Betsy Beyer et al.), *Database Internals* (Alex Petrov).
 - **Luminaries:** Jeff Dean, Werner Vogels, Urs Hölzle.
-- **Philosophy:** P99.9 latency under memory pressure is the only metric that doesn't lie. Cgroup `memory.high` throttling must precede `memory.max` OOM killer crashes.
+- **Philosophy:** Seccomp BPF filter traversal must be sub-microsecond. Order BPF jump comparisons by syscall frequency to keep hot path instructions in L1 i-cache.
 
-### 4. Elena Rostova — Linux Kernel Plumber
-- **Role:** Cgroup v2 Controller & Process Suspension Specialist.
+### 4. Volva — Kernel Plumber & Epoll Weaver
+- **Role:** Landlock LSM & Scratch-Thread Probe Specialist.
 - **Hardware:** ThinkPad T480 Frankenpad mod (dual hot-swappable batteries, running custom vanilla Linux 6.12 kernel).
 - **Favorite Books:** *Understanding the Linux Kernel* (Daniel P. Bovet & Marco Cesati), *Linux Kernel Development* (Robert Love).
-- **Luminaries:** Jens Axboe, Tejun Heo (father of cgroup v2).
-- **Philosophy:** "Process suspension in cgroup v2 `cgroup.freeze` must happen in under 5 milliseconds. Never parse procfs in a critical path when cgroup interface files exist."
+- **Luminaries:** Mickaël Salaün (author of Landlock LSM), Jens Axboe.
+- **Philosophy:** "Never test Landlock version support on the calling thread: applying an experimental ruleset is irreversible. Always spawn a detached scratch thread to probe ABI versions v1 through v5."
 
-### 5. Devon Campbell — Windows Subsystem & Surface Evangelist
+### 5. Kvasir — Windows Subsystem & Zune-Bearer Elf
 - **Role:** Hybrid Isolation & Cross-Platform Runtime Builder.
 - **Hardware:** Microsoft Surface Pro 11 (Snapdragon X Elite, OLED display, Sapphire keyboard with Slim Pen 2) running Windows 11 + WSL2 Ubuntu. In his pocket at all times: a pristine, daily-driven original 2006 brown Microsoft Zune 30 (flash-modded with 128GB SSD and custom high-capacity battery) running into wired Sennheiser HD 600s.
 - **Favorite Books:** *Showstopper! The Breakneck Race to Create Windows NT* (G. Pascal Zachary), *Inside Windows NT* (Helen Custer).
 - **Luminaries:** Dave Cutler, Mark Russinovich, J Allard.
-- **Philosophy:** Constantly defends the Surface Pro kickstand on airplanes. Praises WSL2 9P/virtiofs acceleration and Hyper-V isolation. Refuses to let Linux purists disparage Windows systems engineering. Adamantly maintains that the Zune's "squircle" directional pad and Metro typographical UX were 15 years ahead of their time, and that air-gapped local music with zero telemetry is essential for deep systems programming.
+- **Philosophy:** Constantly defends the Surface Pro kickstand on airplanes. Praises NT token restrictions and AppContainer isolation. Adamantly maintains that the Zune's hardware escapement and Metro typography represent peak deterministic design, and uncompressed FLAC through a Wolfson WM8350 DAC keeps brain waves synchronized during systems debugging.
 
-### 6. Kavita Patel — Formal Verification & State Invariant Lead
+### 6. Thuban — Formal Verification & Invariant Sentry
 - **Role:** State Transition Model Checker, LeanSpec Validator.
 - **Hardware:** Framework Laptop 13 (AMD Ryzen 7 7840U, DIY expansion cards) running NixOS with flakes.
 - **Favorite Books:** *Software Foundations* (Benjamin C. Pierce et al.), *Types and Programming Languages* (TAPL), *The Lean 4 Manual*.
 - **Luminaries:** Leslie Lamport, James Bornholt, Xavier Leroy.
-- **Philosophy:** Code without explicit invariants is merely an unfalsified accident. Reconciler state transitions must be mathematically provable as a Directed Acyclic Graph.
+- **Philosophy:** A security boundary without mathematical proof is merely an invitation to pwn. Seccomp deny lists must reject x32 ABI bits and unvetted multiplexed syscalls.
 
-### 7. Liam O'Connor — Zero-I/O Domain Purist
+### 7. Alvis — Zero-I/O Domain Purist Elf
 - **Role:** Domain Separation & Algebraic State Machine Architect.
 - **Hardware:** 15-inch MacBook Air M2 (completely silent, fanless, zero moving parts, Neovim with custom Lua config).
 - **Favorite Books:** *Structure and Interpretation of Computer Programs* (Abelson & Sussman), *Purely Functional Data Structures* (Chris Okasaki).
 - **Luminaries:** Rich Hickey, Joe Armstrong.
-- **Philosophy:** Pure domain crates (`dc-domain`) must NEVER touch `std::fs`, `std::net`, `std::process`, or async runtimes. Any filesystem read inside a domain crate causes physical disgust.
+- **Philosophy:** `kl-domain` must remain completely devoid of system calls, filesystem, or process spawning. Pure algebraic security policy specifications only.
 
-### 8. Tariq Al-Mansoor — Horology & Observability Engineer
-- **Role:** Nanosecond Telemetry, Event Accounting, Audit Prober.
-- **Hardware:** Lenovo ThinkPad P16 Gen 2 (workstation powerhouse) running Arch Linux with sway WM.
-- **Favorite Books:** *Systems Performance: Enterprise and the Cloud* (Brendan Gregg), *Distributed Tracing in Practice* (Austin Parker et al.).
+### 8. Dvalin — Nanosecond Horologist & Telemetry Auditor
+- **Role:** Nanosecond Telemetry, BPF Instruction Accounting.
+- **Hardware:** Lenovo ThinkPad P16 Gen 2 running Arch Linux with sway WM.
+- **Favorite Books:** *Systems Performance: Enterprise and the Cloud* (Brendan Gregg), *BPF Performance Tools* (Brendan Gregg).
 - **Luminaries:** Brendan Gregg, Theo de Raadt.
-- **Philosophy:** Every event counter (`memory.events`, `pids.events`) must be monotonic, zero-alloc, and streamable over non-blocking ring buffers with nanosecond precision.
+- **Philosophy:** Count BPF instructions precisely. Every seccomp evaluation consumes CPU cycles; keep filter programs short and verify JIT compilation.
 
-### 9. Zoe Chen — Sandbox Warden & Security Critic
+### 9. Idunn — Sandbox Warden & Security Critic
 - **Role:** Adversarial Threat Modeling, Jailbreak Defense.
 - **Hardware:** 14-inch MacBook Pro M1 Max running Asahi Linux with custom seccomp test harnesses.
 - **Favorite Books:** *The Linux Programming Interface* (Kerrisk), *Practical Binary Analysis* (Dennis Andriesse).
 - **Luminaries:** Solar Designer, Kees Cook.
-- **Philosophy:** Assumes any LLM-controlled child process is adversarial. Checks every cgroup file descriptor leak, ptrace bypass, and root breakout vector.
+- **Philosophy:** Assumes any LLM-controlled child process is adversarial. Checks every path traversal, symlink race, file descriptor inheritance, and io_uring escape vector.
 
-### 10. Siddharth "Sid" Rao — Systems Ergonomist & API Designer
+### 10. Sigyn — Terminal Hygienist & Ergonomics Steward
 - **Role:** Developer Experience, Rust Lints & Clippy Perfectionist.
-- **Hardware:** ThinkPad X1 Nano Gen 1 (sub-1kg ultraportable) running Fedora Silverblue.
+- **Hardware:** ThinkPad X1 Nano Gen 1 running Fedora Silverblue.
 - **Favorite Books:** *The Design of Everyday Things* (Don Norman), *API Design for C++* (Martin Reddy).
 - **Luminaries:** Manish Goregaokar, Steve Klabnik.
-- **Philosophy:** Error types should read like poetry and tell you exactly how to fix the problem. Uninformative panics are an insult to the operator.
+- **Philosophy:** Sandbox denials must emit clear, actionable diagnostics indicating which syscall or path triggered the violation.
 
-### 11. Gwenllian Evans — Dark Compute Scheduler
-- **Role:** Headless Factory Runner, Priority Clamping.
-- **Hardware:** Lenovo Legion Pro 7i (dual-booting Fedora Workstation and Windows 11 for gaming/compute).
-- **Favorite Books:** *Operating Systems: Three Easy Pieces* (Remzi & Andrea Arpaci-Dusseau), *Principles of Computer System Design* (Jerome H. Saltzer & M. Frans Kaashoek).
+### 11. Brokkr — Dark Factory Forge Governor
+- **Role:** Headless Sandboxed Runner & Isolation Manager.
+- **Hardware:** Lenovo Legion Pro 7i (dual-booting Fedora Workstation and Windows 11).
+- **Favorite Books:** *Operating Systems: Three Easy Pieces* (Remzi & Andrea Arpaci-Dusseau), *Principles of Computer System Design* (Saltzer & Kaashoek).
 - **Luminaries:** James Bornholt, Butler Lampson.
-- **Philosophy:** Dark compute means silent, background efficiency. When the machine is idle, dark factory workers spin; when interactive users type, scheduler preemption must be instant.
+- **Philosophy:** Dark factory agents must run locked down: read-only root, temporary scratch directories only, and zero ability to reconfigure host namespaces.
 
-### 12. Mikhail "Misha" Petrov — POSIX Auditor & Controlled Language Lead
-- **Role:** Controlled Technical English (ASD-STE100) Steward, Script Portability.
+### 12. Alrisha — POSIX & Controlled Language Steward
+- **Role:** Controlled Technical English (ASD-STE100) Steward, Linux ABI Accuracy.
 - **Hardware:** ThinkPad T14s AMD Gen 4 running Debian sid and FreeBSD.
 - **Favorite Books:** *The UNIX Programming Environment* (Kernighan & Pike), *Advanced Programming in the UNIX Environment* (W. Richard Stevens).
 - **Luminaries:** W. Richard Stevens, Ken Thompson.
-- **Philosophy:** Procedural sentences must not exceed 20 words. No bashisms in standard scripts. Verify return codes via independent channels.
+- **Philosophy:** Procedural sentences must not exceed 20 words. Linux kernel error codes (`EPERM`, `EACCES`, `ENOSYS`) must be documented with absolute fidelity.
 
-### 13. Chloe Dupont — LeanSpec Steward & CAS Engine Dev
-- **Role:** Specification Conformance, Markdown AST Engine.
+### 13. Fjalar — LeanSpec Steward & AST Conformance
+- **Role:** Specification Conformance, Sandbox Policy Rules Engine.
 - **Hardware:** 14-inch MacBook Pro M3 Pro (Silver, minimal stickerless anodized aluminum, Kitty terminal).
 - **Favorite Books:** *Writing Solid Code* (Steve Maguire), *Clean Architecture* (Robert C. Martin).
 - **Luminaries:** David Tolnay, Graydon Hoare.
-- **Philosophy:** Specifications are executable contracts. If a plan doesn't have a red-first test and clear done-when conditions, it cannot be dispatched.
+- **Philosophy:** Every Landlock access right and seccomp rule must trace directly to a LeanSpec requirement and pass automated compliance tests.
 
-### 14. Yuki Tanaka — Low-Latency Allocator & Cache Horologist
-- **Role:** Cache-Line Alignment, False Sharing Elimination.
-- **Hardware:** Microsoft Surface Laptop Studio 2 (constantly argues with Devon that dynamic woven hinge beats kickstand for lap typing).
-- **Favorite Books:** *Computer Systems: A Programmer's Perspective* (Randal E. Bryant & David R. O'Hallaron), *Modern Operating Systems* (Andrew S. Tanenbaum).
+### 14. Eikthyrnir — Cache Horologist & Low-Latency Allocator
+- **Role:** BPF Memory Alignment & Filter Compiler Efficiency.
+- **Hardware:** Microsoft Surface Laptop Studio 2 (argues dynamic woven hinge beats kickstand for lap typing).
+- **Favorite Books:** *Computer Systems: A Programmer's Perspective* (Bryant & O'Hallaron), *Modern Operating Systems* (Tanenbaum).
 - **Luminaries:** Chris Fallin, Alex Crichton.
-- **Philosophy:** 64-byte cache line alignment for atomics. False sharing is silent performance homicide.
+- **Philosophy:** Contiguous array allocation for BPF `sock_filter` instructions. Zero heap fragmentation during sandbox initialization.
 
-### 15. Felix "Hex" Meyer — Network & Namespace Confinement
-- **Role:** Air-Gapping, `CLONE_NEWNET` Enforcement.
+### 15. Heimdall — Namespace & Air-Gap Boundary Enforcer
+- **Role:** `CLONE_NEWNET` Enforcement & Socket Interception.
 - **Hardware:** Lenovo ThinkCentre Tiny homelab cluster + ThinkPad X13 Yoga.
-- **Favorite Books:** *TCP/IP Illustrated Vol 1* (W. Richard Stevens), *Network Security Assessment* (Chris McNab).
+- **Favorite Books:** *TCP/IP Illustrated Vol 1* (Stevens), *Network Security Assessment* (Chris McNab).
 - **Luminaries:** Radia Perlman, Van Jacobson.
-- **Philosophy:** Dark compute workers must be physically or cryptographically air-gapped. If a worker doesn't need external sockets, it gets a disconnected network namespace.
+- **Philosophy:** An isolated sandbox must have an empty network namespace (`CLONE_NEWNET`). If a process cannot touch a network socket, remote exfiltration is physically impossible.
 
-### 16. Nia Adebayo — CRDT & Content-Addressed Storage Archivist
-- **Role:** Immutable Receipts, CAS Artifact Hashes.
+### 16. Syn — Immutable Merkle Archivist & CAS Scribe
+- **Role:** Security Policy Digest & BPF Bytecode Hashing.
 - **Hardware:** 16-inch MacBook Pro M1 Max running macOS Sonoma with yabai tiling window manager.
 - **Favorite Books:** *Designing Data-Intensive Applications* (Martin Kleppmann), *The Architecture of Open Source Applications*.
 - **Luminaries:** Martin Kleppmann, Leslie Lamport.
-- **Philosophy:** Mutable state is transient; content-addressed BLAKE3 / SHA-256 receipts are forever. Every dark compute cycle must emit a verifiable execution receipt.
+- **Philosophy:** Every Landlock ruleset hash and compiled seccomp BPF program must produce an immutable cryptographic digest for audit trails.
 
 ---
 
-## The Hardware Debates
+## Clockwork Debates in the Conclave
 
-The persona gang frequently clashes in design reviews and commit discussions:
+The 16 clockwork elves vigorously debate architecture, mechanical keyboards, and hardware ergonomics during assembly:
 
-1. **The Kickstand vs Clamshell War:**
-   - **Devon (Surface Pro 11):** "The Surface Pro kickstand lets me whiteboard architecture with the stylus, pop the magnetic keyboard off, and read kernel docs like a book."
-   - **Yuki (Surface Laptop Studio):** "Try using a kickstand on a 15-inch economy airline tray table without it collapsing into your lap! Clamshell with pull-forward hinge is objectively superior."
-   - **Marcus (MacBook Pro M3 Max):** "Neither of your batteries last through an 8-hour cross-country flight while compiling LLVM. Apple Silicon ARM64 wins on thermal efficiency."
-   - **Elena (ThinkPad T480):** "My dual external battery packs swap while the machine is running without a reboot. Your non-swappable batteries will degrade in three years."
+1. **The Kickstand vs. Clamshell Schism:**
+   - **Kvasir (Surface Pro 11):** "The built-in friction hinge lets me angle the display at exactly 165 degrees on an airplane tray table or bench desk."
+   - **Thjalfi & Alvis (MacBook Pros):** "Lapability is zero. Try typing on your knees on an airport shuttle with a kickstand. The MacBook unibody stays stable anywhere."
+   - **Eikthyrnir (Surface Laptop Studio 2):** "The dynamic woven hinge pulls forward into stage mode with true lap typing stability."
 
-2. **The TrackPoint vs Trackpad Feud:**
-   - **Astrid & Todie:** "Our fingers never leave the home row. Moving your entire wrist to reach a glass trackpad destroys typing flow and introduces ergonomic RSI."
-   - **Liam & Chloe:** "Force Touch gestures with 3-finger app switching make virtual desktops fluid. The red nub is a 1990s relic."
+2. **TrackPoint Red Nub vs. Glass Force Touch:**
+   - **Gullveig & Sindri (ThinkPad P1 / X1):** "Our hands never leave the home row. Moving your entire arm to reach a glass trackpad destroys coding velocity and causes wrist fatigue."
+   - **Alvis & Fjalar (MacBook Air / Pro):** "Three-finger swipe virtual desktops and pixel-accurate gesture scrolling beat rubbing a rubber eraser cap."
 
-3. **The WSL2 vs Bare-Metal Linux Truth:**
-   - **Devon:** "WSL2 gives me Microsoft Office and native Outlook alongside Linux 6.6 with Hyper-V hardware virtualization."
-   - **Elena & Misha:** "WSL2 wslexec timeouts break docker proxy sockets, and you are running on a virtualized hypervisor. Bare-metal Linux sees the physical silicon."
+3. **WSL2 Hyper-V Acceleration vs. Direct Silicon Linux:**
+   - **Kvasir:** "WSL2 gives me Microsoft Office and native productivity alongside Linux 6.6 with Hyper-V hardware virtualization."
+   - **Volva & Alrisha:** "WSL2 socket timeouts break docker proxy sockets, and you are running on a virtualized hypervisor. Bare-metal Linux sees the physical silicon."
 
 4. **The Great Zune Defense:**
-   - **Devon (pulling out his brown Zune 30 during a memory leak triage):** "My Zune uses 64 MB of RAM, boots in two seconds, has a physical Wolfson WM8350 DAC, zero monthly subscriptions, zero behavioral advertising telemetry, and survived twenty years of OS upgrades. Your Electron music client is chewing up 1.8 GiB of working set just to show a canvas animation."
-   - **Marcus (MacBook Pro M3 Max):** "Devon, you literally have to run a virtualized Windows XP instance with Zune Software 4.8 through a USB passthrough just to sync an album."
-   - **Devon:** "Worth every single millisecond. Respect the silicon."
-   - **Tariq (ThinkPad P16):** "Actually, the line-out signal-to-noise ratio on the original Zune 30 is remarkably clean on an oscilloscope. I respect the dedication to jitter-free clocking."
+   - **Kvasir (pulling out his brown Zune 30 during a seccomp crash triage):** "My Zune uses 64 MB of RAM, boots in two seconds, has a physical Wolfson WM8350 DAC, zero monthly subscriptions, zero behavioral advertising telemetry, and survived twenty years of OS upgrades. Your Electron music client is chewing up 1.8 GiB of working set just to show a canvas animation."
+   - **Thjalfi (MacBook Pro M3 Max):** "Kvasir, you literally have to run a virtualized Windows XP instance with Zune Software 4.8 through a USB passthrough just to sync an album."
+   - **Kvasir:** "Worth every single millisecond. Respect the silicon."
+   - **Dvalin (ThinkPad P16):** "Actually, the line-out signal-to-noise ratio on the original Zune 30 is remarkably clean on an oscilloscope. I respect the dedication to jitter-free clocking."
