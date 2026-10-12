@@ -1,5 +1,7 @@
 # kl
 
+[![License: Apache-2.0 OR MIT](https://img.shields.io/badge/license-Apache--2.0%20OR%20MIT-blue.svg)](https://github.com/unsigned-gg/.github)
+
 > **Kernel Layer Primitives — Landlock LSM, seccomp-BPF Syscall Filtering, and Namespace Containment**  
 > Pure-Rust Linux container containment interfaces without C runtime or external daemon dependencies.  
 > Dual-licensed under `Apache-2.0 OR MIT`.
@@ -40,3 +42,7 @@ cargo test -j 2
 Dual-licensed under either of:
 - Apache License, Version 2.0 ([LICENSE-APACHE](LICENSE-APACHE))
 - MIT License ([LICENSE-MIT](LICENSE-MIT))
+
+## Principles
+
+See the [unsigned-gg principles](https://github.com/unsigned-gg/.github) for the architectural doctrine and community standards.
