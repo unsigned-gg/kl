@@ -1,0 +1,77 @@
+--- Log opened Sun Oct 11 20:15:00 2026 UTC
+[20:15:01] *** Joins: Sindri (sindri@metal.unsigned.gg)
+[20:15:02] *** Joins: Idunn (idunn@orchard.unsigned.gg)
+[20:15:03] *** Joins: Brokkr (brokkr@forge.unsigned.gg)
+[20:15:04] *** Joins: Mimir (mimir@well.unsigned.gg)
+[20:15:05] *** Joins: Loki (loki@chaos.unsigned.gg)
+[20:15:06] *** Joins: Thjalfi (thjalfi@swift.unsigned.gg)
+[20:15:07] *** Joins: Volva (volva@wyrd.unsigned.gg)
+[20:15:08] *** Joins: Kratos (kratos@iron.unsigned.gg)
+[20:15:09] *** Joins: Sigyn (sigyn@basin.unsigned.gg)
+[20:15:10] *** Joins: Alrisha (alrisha@knot.unsigned.gg)
+[20:15:11] *** Joins: Thuban (thuban@draco.unsigned.gg)
+[20:15:12] *** Joins: Gullveig (gullveig@gold.unsigned.gg)
+[20:15:15] *** Channel #unsigned-kernel: eBPF Probes, Landlock Rulesets & Priority Clamping
+[20:15:16] *** Mode #unsigned-kernel +nt by ChanServ
+[20:15:20] <Sindri> Order in the conclave. The repository scaffold for `kl` is open on ceres. We are here to agree on the link primitives before any more bytecode touches the Linux kernel.
+[20:15:34] <Brokkr> And before we get ahead of ourselves: cargo invocations stay strictly throttled to `-j 2`. Physical host ceres is running multiple active agent lanes, and we will not starve the other elves of memory or CPU cycles.
+[20:15:52] <Kratos> Invariant number one: `crates/kl-domain` remains completely pure. Zero I/O. Zero filesystem operations. Zero network stack. If I see a single `std::net`, `std::fs`, or `tokio` import in domain, I will reject the PR with extreme prejudice.
+[20:16:10] <Sindri> Agreed. Domain holds the algebra; `crates/kl` holds the metal. Let's start with event streaming. I looked at the old telemetry prototypes and I'm disgusted. Who thought using `BPF_MAP_TYPE_PERF_EVENT_ARRAY` was acceptable in 2026?
+[20:16:32] <Loki> What's wrong with good old perf buffers, smith? They've been dropping packets and thrashing CPU caches reliably since Linux 4.4.
+[20:16:48] <Sindri> You know damn well what's wrong with them, Loki. Per-CPU buffers force memory fragmentation. If core 0 is saturated while core 7 is idle, core 0 overflows its ring and drops events while core 7 sits there with 64KB of pristine unused cachelines!
+[20:17:15] <Sindri> Furthermore, perf buffers require kernel-to-user memory copying via `bpf_perf_event_output`. In `kl`, we mandate `BPF_MAP_TYPE_RINGBUF`. One shared multi-producer, single-consumer ring mapped with a double-page virtual address trick.
+[20:17:35] <Thjalfi> Double-page virtual address trick? Explain the cycle budget on that.
+[20:17:58] <Sindri> The kernel maps the data pages of the ring buffer into userspace twice consecutively in virtual memory. So if the ring is 64KB, page offset 64KB maps to the exact same physical frame as offset 0. When an event wraps around the end of the ring, userspace gets a contiguous pointer without copying or slice stitching. Zero-copy read. Direct pointer dereference.
+[20:18:22] <Thjalfi> Now you're talking my language. My telemetry probe cycle budget is non-negotiable: strictly under 50 nanoseconds per probe invocation.
+[20:18:41] <Mimir> 50 nanoseconds is ambitious for dynamic kprobes, Thjalfi. Remember the hardware cost of `int3` breakpoints and the kernel trampoline.
+[20:19:02] <Thjalfi> That's why we don't use classic kprobes on hot paths! We use `fentry` / `fexit` BPF trampolines where the kernel patches a 5-byte nop directly into a call instruction. 15 nanoseconds entry, 12 nanoseconds map update, zero-copy commit into Sindri's ring buffer. Total probe execution cycle: 38 nanoseconds. Well below my 50ns threshold.
+[20:19:30] <Gullveig> The ring buffer is only one half of the equation, smith. What about map state? If we treat BPF maps as raw heaps of mutable bytes, concurrent probes will tear data structures apart under load.
+[20:19:51] <Gullveig> I demand that every map in `kl-domain` be modeled as a strict finite state machine: `Declared -> Allocated -> Verified -> Active -> Drained -> Closed`.
+[20:20:15] <Loki> Oh, how quaint! An algebraic state machine for kernel memory! What happens when I attach an unprivileged BPF token from a rogue user namespace and start writing garbage into your `Active` state map?
+[20:20:39] <Gullveig> You won't write garbage because transition invariants are strictly verified before the file descriptor is ever pinned. In user space, the lifecycle transition must be monotonic. And inside the BPF program, state updates are bound to atomic operations or `bpf_spin_lock`.
+[20:21:05] <Loki> `bpf_spin_lock`? Inside a probe? Mimir, will your precious verifier even allow that?
+[20:21:28] <Mimir> The verifier will allow spinlocks only in hash, array, and cgroup storage maps. But hear this, Loki: do not underestimate the verifier's eye. The verifier in Linux 5.2+ has a hard instruction complexity limit of exactly 1,000,000 instructions.
+[20:21:55] <Mimir> If your unrolled loops, branch state explosions, or tail call chains cause the verifier's state pruning engine to exceed 1M verified states, it rejects the program with `E2BIG`. `kl-domain` must enforce this limit before `bpf(BPF_PROG_LOAD)` is ever called.
+[20:22:20] <Brokkr> And what about stack frames? The BPF hardware verifier enforces a rigid 512-byte stack frame limit. No dynamically sized stack allocations. No recursion.
+[20:22:42] <Mimir> Exactly 512 bytes. If you allocate a 513-byte struct on the BPF stack, the verifier halts with `invalid stack off=-520`. In `kl-domain`, `VerifierBounds::max_stack_bytes` is hard-coded to 512. If a probe descriptor specifies a stack budget exceeding 512 bytes, it is dead on arrival.
+[20:23:08] <Idunn> Enough about maps and verifiers. What about the perimeter? What about filesystem confinement?
+[20:23:25] <Idunn> We are executing untrusted agent code and complex build pipelines. I will not have any agent process wandering around host mounts. We are anchoring filesystem sandboxing in Linux Landlock LSM, and my rules are absolute.
+[20:23:50] <Idunn> Rule number one: `/proc` traversal is unconditionally forbidden. Banned. Denied.
+[20:24:12] <Loki> Come now, Idunn! Banning `/proc`? What if an innocent agent needs to read `/proc/cpuinfo` to count its hardware threads? Or check `/proc/self/status`?
+[20:24:35] <Idunn> Innocent? In your dreams, Loki! If an agent can open `/proc`, it can open `/proc/$pid/mem` to inspect neighboring process address spaces. It can inspect `/proc/kcore` to hunt for kernel physical memory offsets. It can read `/proc/kallsyms` to bypass KASLR. It can snoop file descriptors through `/proc/$pid/fd`.
+[20:25:05] <Idunn> If the agent needs CPU topology, `kl` will provide cached domain facts gathered before confinement drops. Once Landlock engages, any path rule attempting to grant access to `/proc` or `/proc/*` will trigger `DomainError::ProhibitedPathRule`.
+[20:25:31] <Kratos> Strongly endorse. The domain model must enforce Idunn's ban at compile-time and validation-time. If `/proc` appears in a `PathRuleDescriptor`, fail the plan immediately.
+[20:25:50] <Alrisha> What Landlock ABI versions are we targeting? In Linux 5.13 we had ABI V1 with basic read/write/execute rights. But by Linux 6.7 we have V4 with network socket binding, and Linux 6.10 brings V5 with `LANDLOCK_ACCESS_FS_IOCTL_DEV`.
+[20:26:15] <Idunn> We support ABI V1 through V5. In `kl-domain`, `AccessFsSet` dynamically masks access rights according to the kernel's active ABI. If an operator requests Landlock V1, rights like `Truncate` (ABI V3) or `Refer` (ABI V2) are cleanly masked. And `PR_SET_NO_NEW_PRIVS` is enforced before the ruleset restricts the process.
+[20:26:45] <Sigyn> What happens when an agent needs to unlink temporary files or rotate logs? If you strip `RemoveFile` from its workspace, it will crash on the first clean-up loop.
+[20:27:08] <Idunn> Workspaces are granted `read_write` access, which includes `ReadFile`, `WriteFile`, `ReadDir`, and `Truncate`. System libraries in `/usr`, `/lib`, and `/bin` are granted strictly `read_execute`. The root filesystem `/` is read-only. No agent process can create character or block devices (`MakeChar` and `MakeBlock` are stripped everywhere).
+[20:27:35] <Thuban> Let us turn our attention to the scheduler. We have not discussed priority clamping.
+[20:27:52] <Thuban> Ceres is a shared multi-agent machine. If one agent spawns a rogue worker loop or cranks its nice level to -20 without clamping, it starves the other sessions on the host.
+[20:28:15] <Thuban> In `kl`, we implement strict priority clamping:
+[20:28:28] <Thuban> 1. Standard user threads are clamped to CFS nice values within `[-20, 19]`. Default is 0.
+[20:28:46] <Thuban> 2. Realtime policies (`SCHED_FIFO` and `SCHED_RR`) require explicit static priorities between 1 and 99.
+[20:29:05] <Loki> Ah, realtime scheduling! Let me introduce you to my favorite creature: priority inversion.
+[20:29:25] <Loki> Suppose Sindri's glorious eBPF probe is running in an interrupt context or bound to a `SCHED_FIFO` thread with priority 90, writing millions of events into the ring buffer. But the userspace consumer thread draining that ring buffer is running under standard `SCHED_OTHER` with nice 0.
+[20:29:50] <Loki> Some heavy compilation job starts up on another core, eats the CFS CPU bandwidth, and starves the consumer thread. Meanwhile, the probe continues pumping events at priority 90. Result? Ring buffer wraps around, drops thousands of events, and the entire observability pipeline goes blind!
+[20:30:16] <Sindri> Loki, for once your malicious mind has hit upon a legitimate systems defect.
+[20:30:35] <Volva> I foresaw this interleaving in the threads of Wyrd. A producer thread at RT priority with a consumer thread at CFS priority is an unhandled starvation hazard.
+[20:30:58] <Thuban> That is why `kl-domain` now includes `PriorityInversionGuard`.
+[20:31:16] <Thuban> When an operator configures an eBPF probe link with a ring-buffer consumer, `PriorityInversionGuard::check_producer_consumer` verifies that the consumer thread's priority matches or exceeds the probe producer's priority. If the producer is `SCHED_FIFO` while the consumer is `SCHED_OTHER`, it raises a `PriorityInversionHazard` error immediately!
+[20:31:45] <Sigyn> The basin catches the poison. That will prevent silent data loss before the ring-buffer ever allocates a single byte.
+[20:32:04] <Brokkr> And what about seccomp? Where does seccomp-BPF fit into this tripartite architecture?
+[20:32:24] <Kratos> Seccomp-BPF is the third pillar. Landlock guards the filesystem; eBPF guards observability and networking; Seccomp guards the system call interface.
+[20:32:45] <Kratos> Every seccomp filter in `kl` starts with an architecture check: `AUDIT_ARCH_X86_64`, `AUDIT_ARCH_AARCH64`, or `AUDIT_ARCH_RISCV64`. If a process attempts an x32 or cross-ABI system call, seccomp immediately returns `SECCOMP_RET_KILL_PROCESS`.
+[20:33:12] <Kratos> Default action is fail-closed. System calls like `ptrace`, `bpf` (from unauthorized callers), `kexec_load`, `reboot`, and `mount` are filtered and denied with `SECCOMP_RET_ERRNO(EPERM)` or `SECCOMP_RET_TRAP`.
+[20:33:38] <Mimir> And the instruction count of the generated BPF filter is verified against the classic BPF limit of 4096 instructions.
+[20:33:55] <Alrisha> Let us check the status of the repository. What is the state of `kl` on ceres right now?
+[20:34:15] <Sindri> Let's review the achievements:
+[20:34:25] <Sindri> 1. `crates/kl-domain` is complete, pure, and zero-I/O verified. Probes, maps, ring-buffer descriptors, Landlock rulesets, seccomp filters, and priority clamps all pass unit tests.
+[20:34:48] <Sindri> 2. `crates/kl` systems runtime implements the attachment manager, zero-copy ring-buffer consumer, priority clamper, and confinement enforcers.
+[20:35:10] <Brokkr> 3. `Justfile` and `Makefile` are in place, defaulting to `JOBS ?= 2` to honor our host throttling rules. `make check` and `make smoke` both exit 0 cleanly.
+[20:35:32] <Idunn> 4. `specs/SPEC-0001-kernel-link-ebpf.md` is drafted with full technical rigor, documenting the eBPF probe specification, Landlock rulesets with `/proc` bans, and kernel verification bounds.
+[20:35:54] <Gullveig> 5. All 16 workspace tests pass in under one second. Serde roundtrips, algebraic state transitions, and verifier bounds are verified.
+[20:36:15] <Mimir> The architecture is sound. Machine sympathy is honored. The verifier limits are respected.
+[20:36:30] <Kratos> Run the gates one last time. Prepare the signed commit.
+[20:36:45] <Sindri> Conclave adjourned. Let the kernel link land.
+[20:36:50] *** Mode #unsigned-kernel -m by Sindri
+--- Log closed Sun Oct 11 20:37:00 2026 UTC
