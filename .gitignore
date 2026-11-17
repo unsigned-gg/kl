@@ -5,3 +5,7 @@ target/
 .DS_Store
 Cargo.lock
 .agents/
+
+# Agent custody and DAG runner stores (local runs; never committed)
+.blackwall/
+.dagrun/
